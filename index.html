@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jogo de Cores e Nomes</title>
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; margin-top: 50px; }
+        #colorName { font-size: 50px; font-weight: bold; margin: 20px; display: none; }
+        button.colorButton { padding: 40px; font-size: 0; margin: 10px; cursor: pointer; width: 100px; height: 100px; border: none; }
+        button.actionButton { padding: 10px 20px; font-size: 16px; cursor: pointer; margin: 10px; }
+        #score, #timer { font-size: 24px; margin-top: 20px; }
+        #buttons, #score, #timer { display: none; }
+        #retryButton { display: none; }
+    </style>
+</head>
+<body>
+
+<h1>Jogo de Cores vs. Nomes</h1>
+<p>Selecione a cor real do texto, não o nome escrito!</p>
+
+<div id="colorName"></div>
+<div id="buttons"></div>
+<h2 id="score">Pontuação: 0</h2>
+<h2 id="timer">Tempo restante: 20s</h2>
+
+<button id="startButton" class="actionButton">Iniciar</button>
+<button id="retryButton" class="actionButton">Jogar Novamente</button>
+
+<script>
+    const colors = [
+        { name: "Vermelho", hex: "#FF0000" },
+        { name: "Verde", hex: "#00FF00" },
+        { name: "Azul", hex: "#0000FF" },
+        { name: "Amarelo", hex: "#FFFF00" },
+        { name: "Laranja", hex: "#FFA500" },
+        { name: "Roxo", hex: "#800080" },
+        { name: "Cinza", hex: "#A9A9A9" }  // Cinza
+    ];
+
+    let score = 0;
+    let timeLeft = 20;
+    let timerInterval;
+
+    const colorNameDisplay = document.getElementById("colorName");
+    const buttonsDiv = document.getElementById("buttons");
+    const scoreDisplay = document.getElementById("score");
+    const timerDisplay = document.getElementById("timer");
+    const startButton = document.getElementById("startButton");
+    const retryButton = document.getElementById("retryButton");
+
+    // Função para embaralhar as cores
+    function shuffle(array) {
+        return array.sort(() => Math.random() - 0.5);
+    }
+
+    // Função para criar um novo desafio de cor
+    function newChallenge() {
+        const shuffledColors = shuffle([...colors]);
+        const chosenColor = shuffledColors[0]; // Nome da cor
+        const textColor = shuffledColors[1];   // Cor do texto
+
+        // Define o nome da cor e pinta com outra cor
+        colorNameDisplay.innerText = chosenColor.name;
+        colorNameDisplay.style.color = textColor.hex;
+
+        // Limpa os botões anteriores
+        buttonsDiv.innerHTML = '';
+
+        // Cria os botões com as cores misturadas
+        shuffle(shuffledColors).forEach(color => {
+            const button = document.createElement("button");
+            button.classList.add("colorButton");
+            button.style.backgroundColor = color.hex;
+            button.onclick = () => checkAnswer(color.hex, textColor.hex);
+            buttonsDiv.appendChild(button);
+        });
+    }
+
+    // Função para verificar se a resposta está correta
+    function checkAnswer(selectedHex, correctHex) {
+        if (selectedHex === correctHex) {
+            score++;
+        } else {
+            score = Math.max(0, score - 1);
+        }
+        scoreDisplay.innerText = "Pontuação: " + score;
+        newChallenge(); // Gera um novo desafio, mas não reinicia o tempo
+    }
+
+    // Função para iniciar o contador
+    function startTimer() {
+        timerInterval = setInterval(() => {
+            timeLeft--;
+            timerDisplay.innerText = "Tempo restante: " + timeLeft + "s";
+            
+            if (timeLeft <= 0) {
+                endGame();
+            }
+        }, 1000);
+    }
+
+    // Função para iniciar o jogo
+    function startGame() {
+        startButton.style.display = 'none'; // Esconde o botão de iniciar
+        retryButton.style.display = 'none'; // Esconde o botão "Jogar Novamente"
+        colorNameDisplay.style.display = 'block';
+        buttonsDiv.style.display = 'block';
+        scoreDisplay.style.display = 'block';
+        timerDisplay.style.display = 'block';
+        score = 0; // Reseta a pontuação
+        scoreDisplay.innerText = "Pontuação: " + score;
+        timeLeft = 20; // Reinicia o tempo
+        newChallenge(); // Gera o primeiro desafio
+        startTimer();   // Começa o contador de tempo
+    }
+
+    // Função para encerrar o jogo quando o tempo acabar
+    function endGame() {
+        clearInterval(timerInterval);
+        alert("Tempo esgotado! Sua pontuação final é: " + score);
+        retryButton.style.display = 'block'; // Mostra o botão "Jogar Novamente"
+    }
+
+    // Função para reiniciar o jogo
+    function retryGame() {
+        startGame(); // Reinicia o jogo
+    }
+
+    // Evento para o botão "Iniciar"
+    startButton.onclick = startGame;
+
+    // Evento para o botão "Jogar Novamente"
+    retryButton.onclick = retryGame;
+
+</script>
+
+</body>
+</html>
