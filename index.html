@@ -9,9 +9,11 @@
         #colorName { font-size: 50px; font-weight: bold; margin: 20px; display: none; }
         button.colorButton { padding: 40px; font-size: 0; margin: 10px; cursor: pointer; width: 100px; height: 100px; border: none; }
         button.actionButton { padding: 10px 20px; font-size: 16px; cursor: pointer; margin: 10px; }
+        button#infoButton { font-size: 20px; cursor: pointer; padding: 10px; margin: 20px; background-color: lightgray; }
         #score, #timer { font-size: 24px; margin-top: 20px; }
         #buttons, #score, #timer { display: none; }
         #retryButton { display: none; }
+        #infoMessage { display: none; font-size: 18px; margin: 20px; border: 2px solid #ccc; padding: 15px; background-color: #f9f9f9; }
     </style>
 </head>
 <body>
@@ -27,6 +29,14 @@
 <button id="startButton" class="actionButton">Iniciar</button>
 <button id="retryButton" class="actionButton">Jogar Novamente</button>
 
+<!-- Botão de Informação -->
+<button id="infoButton" class="actionButton">?</button>
+
+<!-- Mensagem de Informação -->
+<div id="infoMessage">
+    O cérebro dá mais atenção ao que está escrito. Destaca-se que é muito importante identificar se uma criança tem dificuldades em perceber as cores, pois isso pode comprometer seriamente sua aprendizagem. Imagine um gráfico de setores identificado por cores... Estima-se que existam 8 milhões de daltônicos no Brasil. Criado pelo professor Edmilson Severino de Souza.
+</div>
+
 <script>
     const colors = [
         { name: "Vermelho", hex: "#FF0000" },
@@ -35,7 +45,7 @@
         { name: "Amarelo", hex: "#FFFF00" },
         { name: "Laranja", hex: "#FFA500" },
         { name: "Roxo", hex: "#800080" },
-        { name: "Cinza", hex: "#A9A9A9" }  // Cinza
+        { name: "Cinza", hex: "#A9A9A9" }
     ];
 
     let score = 0;
@@ -48,6 +58,8 @@
     const timerDisplay = document.getElementById("timer");
     const startButton = document.getElementById("startButton");
     const retryButton = document.getElementById("retryButton");
+    const infoButton = document.getElementById("infoButton");
+    const infoMessage = document.getElementById("infoMessage");
 
     // Função para embaralhar as cores
     function shuffle(array) {
@@ -104,6 +116,7 @@
     function startGame() {
         startButton.style.display = 'none'; // Esconde o botão de iniciar
         retryButton.style.display = 'none'; // Esconde o botão "Jogar Novamente"
+        infoMessage.style.display = 'none'; // Esconde a mensagem informativa
         colorNameDisplay.style.display = 'block';
         buttonsDiv.style.display = 'block';
         scoreDisplay.style.display = 'block';
@@ -127,13 +140,22 @@
         startGame(); // Reinicia o jogo
     }
 
+    // Função para exibir ou esconder a mensagem informativa
+    function toggleInfoMessage() {
+        infoMessage.style.display = (infoMessage.style.display === 'none' || infoMessage.style.display === '') ? 'block' : 'none';
+    }
+
     // Evento para o botão "Iniciar"
     startButton.onclick = startGame;
 
     // Evento para o botão "Jogar Novamente"
     retryButton.onclick = retryGame;
 
+    // Evento para o botão "?"
+    infoButton.onclick = toggleInfoMessage;
+
 </script>
 
 </body>
 </html>
+
